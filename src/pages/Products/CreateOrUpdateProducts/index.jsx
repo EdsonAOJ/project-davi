@@ -21,6 +21,7 @@ export const CreateOrUpdateProducts = ({
   productsFiltered,
   products,
   setProducts,
+  handleGetProducts,
 }) => {
   const toast = useToast();
   const [product, setProduct] = useState(editProduct);
@@ -28,6 +29,34 @@ export const CreateOrUpdateProducts = ({
 
   const handleChangeProduct = e => {
     setProduct({ ...product, [e.target.name]: e.target.value });
+  };
+
+  const deleteProduct = async () => {
+    setLoading(true);
+
+    try {
+      await api.delete(`/product/${editProduct.id}`);
+      setProducts(products.filter(item => item.id !== editProduct.id));
+
+      setProductsFiltered(
+        productsFiltered.filter(item => item.id !== editProduct.id)
+      );
+
+      toast({
+        title: `Produto Deletado com sucesso!`,
+        status: 'success',
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: `Ocorreu um erro ao deletar o produto!`,
+        status: 'error',
+        isClosable: true,
+      });
+    }
+
+    setLoading(false);
+    onClose();
   };
 
   const createOrUpdateProduct = async () => {
@@ -41,7 +70,7 @@ export const CreateOrUpdateProducts = ({
     ) {
       setLoading(false);
       return toast({
-        title: `preencha todos os dados!`,
+        title: `Preencha todos os dados!`,
         status: 'warning',
         isClosable: true,
       });
@@ -83,12 +112,9 @@ export const CreateOrUpdateProducts = ({
       }
     } else {
       try {
-        const response = await api.post('/product', product);
+        await api.post('/product', product);
 
-        setProductsFiltered([...productsFiltered, response.data]);
-
-        setProducts([...products, response.data]);
-
+        handleGetProducts();
         toast({
           title: `Produto criado com sucesso!`,
           status: 'success',
@@ -106,7 +132,6 @@ export const CreateOrUpdateProducts = ({
     onClose();
   };
 
-  console.log(product);
   return (
     <Card p="5">
       <Flex flexDir={'column'}>
@@ -255,6 +280,24 @@ export const CreateOrUpdateProducts = ({
           >
             Fechar
           </Button>
+          {editProduct.id && (
+            <Button
+              bg="#11FFB8"
+              p="1rem"
+              fontSize={'1rem'}
+              borderRadius={'8px'}
+              _hover={{
+                opacity: '0.5',
+              }}
+              _active={{
+                opacity: '0.8',
+              }}
+              onClick={deleteProduct}
+              isLoading={loading}
+            >
+              Deletar produto
+            </Button>
+          )}
 
           <Button
             bg="#11FFB8"

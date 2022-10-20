@@ -246,6 +246,7 @@ export const Products = () => {
           productsFiltered={productsFiltered}
           products={products}
           setProducts={setProducts}
+          handleGetProducts={handleGetProducts}
         />
       </ModalWrapper>
     </MotionFlex>
