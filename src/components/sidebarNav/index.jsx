@@ -27,13 +27,14 @@ export const SidebarNav = () => {
       >
 
         {window.location.pathname === '/' ? (
-          <Flex w='100%' flexDir={'column'} align={'center'} justify='center'  >
+          <Flex w='100%' flexDir={'column'} align={'center'} justify='center' color='white' >
             <Text
               fontWeight={'bold'}
               fontSize='2.2rem'
               fontStyle={'normal'}
               whiteSpace='nowrap'
               overflow={'hidden'}
+
             >
               Bem-Vindo de volta
             </Text>
@@ -43,16 +44,45 @@ export const SidebarNav = () => {
           </Flex>
         ) : (
           <Flex w='100%' mt='3rem' flexDir={'column'} align={'center'} justify='space-between'   >
-            <Stack spacing='4' mt='6' align='stretch'>
-              <Link to='/usuarios'>
+            <Stack spacing='8' mt='6' align='stretch'>
+              <Link to='/users'>
                 <Button
                   bg='#11FFB8'
                   color='white'
                   p='2.3rem'
-                  w='18rem'
-                  fontSize={'1.8rem'}
+                  w='14rem'
+                  fontSize={'1.4rem'}
                   borderRadius={'30px'}
-                  border='1px solid white'
+                  border='1px'
+                  borderColor={window.location.pathname.includes('/users') ? 'gray.100' : 'white'}
+                  _hover={{
+                    opacity: '0.8'
+                  }}
+                  _active={{
+                    opacity: '0.8'
+                  }}
+
+                >
+                  <ChakraLink
+                    display='flex'
+                    align='center'
+                    color={window.location.pathname.includes('/users') ? 'gray.100' : 'white'}
+                  >
+                    USUÁRIOS
+                  </ChakraLink>
+                </Button>
+              </Link>
+
+              <Link to='/providers'>
+                <Button
+                  bg='#11FFB8'
+                  color='white'
+                  p='2.3rem'
+                  w='14rem'
+                  fontSize={'1.4rem'}
+                  borderRadius={'30px'}
+                  border='1px'
+                  borderColor={window.location.pathname.includes('/providers') ? 'gray.100' : 'white'}
                   _hover={{
                     opacity: '0.8'
                   }}
@@ -63,12 +93,40 @@ export const SidebarNav = () => {
                   <ChakraLink
                     display='flex'
                     align='center'
-                    color={window.location.pathname === '/usuarios' ? 'white' : 'white'}
+                    color={window.location.pathname.includes('/providers') ? 'gray.100' : 'white'}
                   >
-                    USUÁRIOS
+                    FORNECEDOR
                   </ChakraLink>
                 </Button>
               </Link>
+
+              <Link to='/products'>
+                <Button
+                  bg='#11FFB8'
+                  color='white'
+                  p='2.3rem'
+                  w='14rem'
+                  fontSize={'1.4rem'}
+                  borderRadius={'30px'}
+                  border='1px'
+                  borderColor={window.location.pathname.includes('/products') ? 'gray.100' : 'white'}
+                  _hover={{
+                    opacity: '0.8'
+                  }}
+                  _active={{
+                    opacity: '0.8'
+                  }}
+                >
+                  <ChakraLink
+                    display='flex'
+                    align='center'
+                    color={window.location.pathname.includes('/products') ? 'gray.100' : 'white'}
+                  >
+                    PRODUTOS
+                  </ChakraLink>
+                </Button>
+              </Link>
+
             </Stack>
 
 
@@ -76,8 +134,8 @@ export const SidebarNav = () => {
               bg='#11FFB8'
               color='white'
               p='2.3rem'
-              w='18rem'
-              fontSize={'1.8rem'}
+              w='14rem'
+              fontSize={'1.4rem'}
               borderRadius={'30px'}
               border='1px solid white'
               _hover={{

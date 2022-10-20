@@ -56,7 +56,7 @@ function AuthProvider({ children }) {
       setLoadingButton(false)
 
       setAuthenticated(true)
-      history.push('/usuarios')
+      history.push('/users')
       return true
     } catch (err) {
 

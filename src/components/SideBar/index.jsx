@@ -49,7 +49,7 @@ export const SideBar = () => {
   }
 
   return (
-    <Box as='aside' minW='30%' bg={'#11FFB8'} borderRadius={'0px  9px 9px 0px'}    >
+    <Box as='aside' minW='25%' bg={'#11FFB8'} borderRadius={'0px  9px 9px 0px'}    >
       <SidebarNav />
     </Box>
   )
