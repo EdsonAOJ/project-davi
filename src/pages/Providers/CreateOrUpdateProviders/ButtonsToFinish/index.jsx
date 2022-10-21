@@ -41,6 +41,29 @@ export const ButtonsToFinish = ({ fullProvider }) => {
     }
   }, [fullProvider, id, toast]);
 
+  const handleDeleteProvider = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (id !== '1') {
+        await api.patch(`/provider/`, { ...fullProvider, active: false });
+        history.push('/providers');
+        setLoading(false);
+        return toast({
+          title: `Fornecedor deletado com sucesso!`,
+          status: 'success',
+          isClosable: true,
+        });
+      }
+    } catch (err) {
+      setLoading(false);
+      return toast({
+        title: `Erro ao deletar fornecedor!`,
+        status: 'error',
+        isClosable: true,
+      });
+    }
+  }, [fullProvider, id, toast]);
+
   return (
     <>
       <Flex mt="5" justify={'space-between'} align="center">
@@ -58,6 +81,25 @@ export const ButtonsToFinish = ({ fullProvider }) => {
         >
           Voltar
         </Button>
+
+        {id !== '1' && (
+          <Button
+            bg="#11FFB8"
+            fontSize={'1rem'}
+            borderRadius={'10px'}
+            _hover={{
+              opacity: '0.5',
+            }}
+            _active={{
+              opacity: '0.8',
+            }}
+            onClick={handleDeleteProvider}
+            isLoading={loading}
+          >
+            Deletar Fornecedor
+          </Button>
+        )}
+
         <Button
           bg="#11FFB8"
           fontSize={'1rem'}
