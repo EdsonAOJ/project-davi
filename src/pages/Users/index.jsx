@@ -20,7 +20,7 @@ import {
 import { formatToCPF } from 'brazilian-values';
 import { CreateOrUpdateUser } from './CreateOrUpdateUser';
 
-export const Home = () => {
+export const Users = () => {
   const toast = useToast();
   const [user, setUser] = useState([]);
   const [users, setUsers] = useState([]);

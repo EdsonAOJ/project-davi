@@ -22,9 +22,11 @@ export const CreateOrUpdateProducts = ({
   products,
   setProducts,
   handleGetProducts,
+  properties,
 }) => {
   const toast = useToast();
   const [product, setProduct] = useState(editProduct);
+
   const [loading, setLoading] = useState(false);
 
   const handleChangeProduct = e => {
@@ -66,7 +68,8 @@ export const CreateOrUpdateProducts = ({
       product.qntd === 0 ||
       product.uM.trim() === '' ||
       product.amount === 0 ||
-      product.providerId.trim() === ''
+      product.providerId.trim() === '' ||
+      product.propertyId.trim() === ''
     ) {
       setLoading(false);
       return toast({
@@ -230,6 +233,27 @@ export const CreateOrUpdateProducts = ({
                   value={item.id}
                   key={key}
                   selected={product?.provider?.id === item.id}
+                >
+                  {item.name}
+                </option>
+              ))}
+            </Select>
+          </Flex>
+
+          <Flex flexDir={'column'}>
+            <Text>Propriedade: </Text>
+
+            <Select
+              placeholder={'Selecione uma opção'}
+              bg="#F1F1F1"
+              onChange={handleChangeProduct}
+              name="propertyId"
+            >
+              {properties?.map((item, key) => (
+                <option
+                  value={item.id}
+                  key={key}
+                  selected={product?.propertyId === item.id}
                 >
                   {item.name}
                 </option>

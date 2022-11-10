@@ -28,12 +28,14 @@ export const Products = () => {
     qntd: 0,
     amount: 0,
     providerId: '',
+    propertyId: '',
   });
 
   const [searchIcon, setSearchIcon] = useState(true);
   const inputRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const [providers, setProviders] = useState([]);
+  const [properties, setProperties] = useState([]);
   const options = ['Ordem alfabética', 'Quantidade', 'Valor'];
 
   const handleRemoveFIlters = () => {
@@ -133,10 +135,17 @@ export const Products = () => {
       setProviders(response.data.result);
     } catch (err) {}
   };
+  const handleGetProperty = async () => {
+    try {
+      const response = await api.get('/properties');
+      setProperties(response.data.result);
+    } catch (err) {}
+  };
 
   useEffect(() => {
     handleGetProducts();
     handleGetProviders();
+    handleGetProperty();
   }, []);
 
   return (
@@ -240,6 +249,7 @@ export const Products = () => {
       <ModalWrapper isOpen={showModal}>
         <CreateOrUpdateProducts
           onClose={() => setShowModal(!showModal)}
+          properties={properties}
           providers={providers}
           editProduct={editProduct}
           setProductsFiltered={setProductsFiltered}
