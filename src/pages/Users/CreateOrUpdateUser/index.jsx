@@ -11,22 +11,36 @@ import { useCallback, useState } from 'react';
 import { Card } from '../../../components/Card';
 import { api } from '../../../services/api/api';
 
-export const CreateOrUpdateUser = ({ onClose, user, users, setUsers }) => {
+export const CreateOrUpdateUser = ({ onClose, user, handleGetUsers }) => {
   const [newUser, setNewUser] = useState(user);
   const toast = useToast();
 
   const handleChangeUser = e => {
+    console.log(newUser);
     if ([e.target.name].includes('ddd')) {
-      newUser.phones[0].ddd = e.target.value;
+      newUser.phones[0].ddd = e.target.value.slice(0, 2);
       setNewUser({ ...newUser });
       return;
     }
 
     if ([e.target.name].includes('number')) {
-      newUser.phones[0].number = e.target.value;
+      newUser.phones[0].number = e.target.value.slice(0, 11);
       setNewUser({ ...newUser });
       return;
     }
+
+    if (e.target.name.toLowerCase() === 'name') {
+      newUser.name = e.target.value.slice(0, 100);
+      setNewUser({ ...newUser });
+      return;
+    }
+
+    if (e.target.name.toLowerCase() === 'cpf') {
+      newUser.cpf = e.target.value.slice(0, 11);
+      setNewUser({ ...newUser });
+      return;
+    }
+
     setNewUser({ ...newUser, [e.target.name]: e.target.value });
   };
 
@@ -49,14 +63,7 @@ export const CreateOrUpdateUser = ({ onClose, user, users, setUsers }) => {
 
         await api.patch(`/user`, newUser);
 
-        let newUsers = users.map(item => {
-          if (item.id === newUser.id) {
-            item = newUser;
-          }
-          return item;
-        });
-
-        setUsers(newUsers);
+        handleGetUsers();
         onClose();
         return toast({
           title: `Usuário atualizado com sucesso!`,
@@ -89,8 +96,8 @@ export const CreateOrUpdateUser = ({ onClose, user, users, setUsers }) => {
         });
       }
 
-      const reponse = await api.post(`/user`, newUser);
-      setUsers([...users, reponse.data]);
+      await api.post(`/user`, newUser);
+      handleGetUsers();
       onClose();
       return toast({
         title: `Usuário criado com sucesso!`,
@@ -105,7 +112,7 @@ export const CreateOrUpdateUser = ({ onClose, user, users, setUsers }) => {
         isClosable: true,
       });
     }
-  }, [newUser, onClose, setUsers, toast, user.id, users]);
+  }, [handleGetUsers, newUser, onClose, toast, user.id]);
 
   return (
     <Card p="5">
@@ -183,6 +190,7 @@ export const CreateOrUpdateUser = ({ onClose, user, users, setUsers }) => {
                 type={'text'}
                 autoComplete="off"
                 name="name"
+                maxLength={'100'}
                 value={newUser.name}
                 onChange={handleChangeUser}
                 _placeholder={{
@@ -209,6 +217,8 @@ export const CreateOrUpdateUser = ({ onClose, user, users, setUsers }) => {
                 type={'number'}
                 autoComplete="off"
                 name="cpf"
+                maxLength={11}
+                max={11}
                 value={newUser.cpf}
                 onChange={handleChangeUser}
                 _placeholder={{

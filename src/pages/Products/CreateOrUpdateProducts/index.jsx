@@ -26,10 +26,30 @@ export const CreateOrUpdateProducts = ({
 }) => {
   const toast = useToast();
   const [product, setProduct] = useState(editProduct);
+  const options = [
+    {
+      id: 1,
+      name: 'kg',
+    },
+    {
+      id: 2,
+      name: 'toneladas',
+    },
+    {
+      id: 3,
+      name: 'litro',
+    },
+  ];
 
   const [loading, setLoading] = useState(false);
 
   const handleChangeProduct = e => {
+    if (e.target.name.includes('name')) {
+      product.name = e.target.value.slice(0, 100);
+      setProduct({ ...product });
+      return;
+    }
+
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
@@ -81,26 +101,9 @@ export const CreateOrUpdateProducts = ({
 
     if (editProduct.id) {
       try {
-        const response = await api.patch('/product', product);
+        await api.patch('/product', product);
 
-        setProductsFiltered(
-          productsFiltered.map(item => {
-            if (item.id === response.data.id) {
-              item = response.data;
-            }
-            return item;
-          })
-        );
-
-        setProducts(
-          products.map(item => {
-            if (item.id === response.data.id) {
-              item = response.data;
-            }
-            return item;
-          })
-        );
-
+        handleGetProducts();
         toast({
           title: `Produto editado com sucesso!`,
           status: 'success',
@@ -154,7 +157,7 @@ export const CreateOrUpdateProducts = ({
               <Input
                 fontSize={'1rem'}
                 color="black"
-                placeholder="Digite seu email"
+                placeholder="Nome do produto"
                 type={'text'}
                 autoComplete="off"
                 name="name"
@@ -170,28 +173,23 @@ export const CreateOrUpdateProducts = ({
           </Flex>
           <Flex flexDir={'column'}>
             <Text>Unidade de medida: </Text>
-            <InputGroup
+
+            <Select
+              placeholder={'Selecione uma opção'}
               bg="#F1F1F1"
-              borderRadius={'8px'}
-              alignItems={'center'}
-              justifyContent="center"
+              onChange={handleChangeProduct}
+              name="uM"
             >
-              <Input
-                fontSize={'1rem'}
-                color="black"
-                placeholder="Digite a unidade de medida"
-                type={'text'}
-                autoComplete="off"
-                name="uM"
-                value={product.uM}
-                onChange={handleChangeProduct}
-                _placeholder={{
-                  opacity: 0.5,
-                  color: 'gray.400',
-                  fontWeight: 'bold',
-                }}
-              />
-            </InputGroup>
+              {options?.map((item, key) => (
+                <option
+                  value={item.name}
+                  key={key}
+                  selected={product?.uM === item.name}
+                >
+                  {item.name}
+                </option>
+              ))}
+            </Select>
           </Flex>
           <Flex flexDir={'column'}>
             <Text>Quantidade: </Text>

@@ -148,6 +148,7 @@ export const Clients = () => {
           client={client}
           clients={clients}
           setClients={setClients}
+          handleGetClients={handleGetClients}
         />
       </ModalWrapper>
     </MotionFlex>

@@ -11,7 +11,7 @@ import {
   Tr,
   useToast,
 } from '@chakra-ui/react';
-import { formatToDate } from 'brazilian-values';
+import { formatToBRL, formatToDate } from 'brazilian-values';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import {
@@ -162,7 +162,7 @@ export const Purchase = () => {
             <Tr>
               <Th>Nome da propriedade</Th>
               <Th>Data</Th>
-
+              <Th>Valor</Th>
               <Th></Th>
             </Tr>
           </Thead>
@@ -171,6 +171,7 @@ export const Purchase = () => {
             {purchaseFiltered.map((item, index) => {
               let propertyName = '';
               let date = item.date;
+              let value = item.amount;
               let canShow = false;
 
               properties.forEach((property, index2) => {
@@ -187,6 +188,8 @@ export const Purchase = () => {
                   <Tr key={index}>
                     <Td>{propertyName}</Td>
                     <Td>{formatToDate(new Date(date))}</Td>
+
+                    <Td>{formatToBRL(value)}</Td>
 
                     <Td
                       cursor={'pointer'}

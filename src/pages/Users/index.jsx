@@ -151,6 +151,7 @@ export const Users = () => {
       <ModalWrapper isOpen={showModal}>
         <CreateOrUpdateUser
           onClose={() => setShowModal(!showModal)}
+          handleGetUsers={handleGetUsers}
           user={user}
           users={users}
           setUsers={setUsers}

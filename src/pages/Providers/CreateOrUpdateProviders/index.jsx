@@ -39,13 +39,40 @@ export const CreateOrUpdateProviders = () => {
   const handleChangeProvider = useCallback(
     (e, phone, address) => {
       if (phone) {
-        setPhones({ ...phones, [e.target.name]: e.target.value });
-        return;
+        if (e.target.name.includes('number')) {
+          phones.number = e.target.value.slice(0, 11);
+          setPhones({ ...phones });
+          return;
+        }
+        if (e.target.name.includes('ddd')) {
+          phones.ddd = e.target.value.slice(0, 2);
+          setPhones({ ...phones });
+          return;
+        }
       }
       if (address) {
+        if (e.target.name.includes('zipCode')) {
+          addresses.zipCode = e.target.value.slice(0, 8);
+          setAddresses({ ...addresses });
+          return;
+        }
+
+        if (e.target.name.includes('name')) {
+          addresses.name = e.target.value.slice(0, 100);
+          setAddresses({ ...addresses });
+          return;
+        }
+
         setAddresses({ ...addresses, [e.target.name]: e.target.value });
         return;
       }
+
+      if (e.target.name.includes('cnpj')) {
+        provider.cnpj = e.target.value.slice(0, 14);
+        setProvider({ ...provider });
+        return;
+      }
+
       setProvider({ ...provider, [e.target.name]: e.target.value });
     },
     [addresses, phones, provider]

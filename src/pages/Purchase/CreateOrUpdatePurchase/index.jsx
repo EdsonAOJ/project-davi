@@ -40,7 +40,7 @@ export const CreateOrUpdatePurchase = ({
     const newArray = [...products];
 
     const newObjet = {
-      fakeId: newArray.length,
+      fakeId: newArray.length + 1,
       productId: '',
       qntd: 0,
       price: '',
@@ -296,7 +296,7 @@ export const CreateOrUpdatePurchase = ({
                 gridGap="10px"
                 align="center"
                 justify={'space-between'}
-                key={itemn.fakeId ?? itemn.id}
+                key={itemn.id ?? itemn.fakeId}
               >
                 <Flex flexDir={'column'} w="40%">
                   <Text>Produto: </Text>
@@ -308,7 +308,7 @@ export const CreateOrUpdatePurchase = ({
                       handleChangeProductsValue(
                         e.target.value,
                         'productId',
-                        itemn.fakeId ?? itemn.id
+                        itemn.id ?? itemn.fakeId
                       );
                     }}
                     name="productId"
@@ -345,7 +345,7 @@ export const CreateOrUpdatePurchase = ({
                         handleChangeProductsValue(
                           e,
                           'qntd',
-                          itemn.fakeId ?? itemn.id
+                          itemn.id ?? itemn.fakeId
                         )
                       }
                       _placeholder={{
@@ -378,7 +378,7 @@ export const CreateOrUpdatePurchase = ({
                         handleChangeProductsValue(
                           e,
                           'price',
-                          itemn.fakeId ?? itemn.id
+                          itemn.id ?? itemn.fakeId
                         );
                       }}
                       _placeholder={{

@@ -32,10 +32,21 @@ export const CreateOrUpdateProperties = () => {
   const handleChangeProvider = useCallback(
     (e, client, address) => {
       if (client) {
+        if (e.target.name.includes('name')) {
+          nameAndClient.name = e.target.value.slice(0, 100);
+          setNameAndClient({ ...nameAndClient });
+          return;
+        }
         setNameAndClient({ ...nameAndClient, [e.target.name]: e.target.value });
         return;
       }
       if (address) {
+        if (e.target.name.includes('zipCode')) {
+          addresses.zipCode = e.target.value.slice(0, 8);
+          setAddresses({ ...addresses });
+          return;
+        }
+
         setAddresses({ ...addresses, [e.target.name]: e.target.value });
         return;
       }

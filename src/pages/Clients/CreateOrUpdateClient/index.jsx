@@ -16,11 +16,17 @@ export const CreateOrUpdateClient = ({
   client,
   clients,
   setClients,
+  handleGetClients,
 }) => {
   const [newCLient, setNewClient] = useState(client);
   const toast = useToast();
 
   const handleChangeClient = e => {
+    if (e.target.name.includes('cnpj')) {
+      newCLient.cnpj = e.target.value.slice(0, 14);
+      setNewClient({ ...newCLient });
+      return;
+    }
     setNewClient({ ...newCLient, [e.target.name]: e.target.value });
   };
 
@@ -42,14 +48,7 @@ export const CreateOrUpdateClient = ({
 
         await api.patch(`/clients`, newCLient);
 
-        let newCLients = clients.map(item => {
-          if (item.id === newCLient.id) {
-            item = newCLient;
-          }
-          return item;
-        });
-
-        setClients(newCLients);
+        handleGetClients();
         onClose();
         return toast({
           title: `Usuário atualizado com sucesso!`,
@@ -80,8 +79,8 @@ export const CreateOrUpdateClient = ({
         });
       }
 
-      const reponse = await api.post(`/clients`, newCLient);
-      setClients([...clients, reponse.data]);
+      await api.post(`/clients`, newCLient);
+      handleGetClients();
       onClose();
       return toast({
         title: `Usuário criado com sucesso!`,
@@ -96,7 +95,7 @@ export const CreateOrUpdateClient = ({
         isClosable: true,
       });
     }
-  }, [client.id, clients, newCLient, onClose, setClients, toast]);
+  }, [client.id, handleGetClients, newCLient, onClose, toast]);
 
   const handleDeleteClient = async () => {
     try {
@@ -190,7 +189,7 @@ export const CreateOrUpdateClient = ({
               <Input
                 fontSize={'1rem'}
                 color="black"
-                placeholder="*******"
+                placeholder="Inscrição"
                 type={'text'}
                 autoComplete="off"
                 name="insc_state"
