@@ -136,7 +136,7 @@ export const Users = () => {
                     <Td
                       cursor={'pointer'}
                       onClick={() => {
-                        setUser({ item, phones: item.phones });
+                        setUser(item);
                         setShowModal(!showModal);
                       }}
                     >

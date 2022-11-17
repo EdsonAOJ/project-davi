@@ -15,6 +15,8 @@ export const CreateOrUpdateUser = ({ onClose, user, handleGetUsers }) => {
   const [newUser, setNewUser] = useState(user);
   const toast = useToast();
 
+  console.log(user, '1');
+
   const handleChangeUser = e => {
     console.log(newUser);
     if ([e.target.name].includes('ddd')) {
@@ -48,10 +50,10 @@ export const CreateOrUpdateUser = ({ onClose, user, handleGetUsers }) => {
     if (user.id) {
       try {
         if (
-          !newUser.email &&
-          !newUser.name &&
-          !newUser.cpf &&
-          newUser.phones[0].ddd.trim() === '' &&
+          !newUser.email ||
+          !newUser.name ||
+          !newUser.cpf ||
+          newUser.phones[0].ddd.trim() === '' ||
           newUser.phones[0].number.trim() === ''
         ) {
           return toast({

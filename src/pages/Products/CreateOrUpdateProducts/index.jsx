@@ -101,6 +101,7 @@ export const CreateOrUpdateProducts = ({
 
     if (editProduct.id) {
       try {
+        delete product.property;
         await api.patch('/product', product);
 
         handleGetProducts();
