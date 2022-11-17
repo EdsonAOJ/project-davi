@@ -27,6 +27,8 @@ import {
 import { Card } from '../../components/Card';
 import { ModalWrapper } from '../../components/ModalWrapper';
 import { api } from '../../services/api/api';
+import { LineChart } from './LineChart';
+import { LineChartProduct } from './LineChartProduct';
 
 export const Report = () => {
   const [showTypeReports, setShowTypeReports] = useState(true);
@@ -59,7 +61,7 @@ export const Report = () => {
     const result = reports?.filter(item => {
       if (value === '1') {
         if (
-          item?.property?.name
+          item?.propertyName
             .toLowerCase()
             ?.includes(inputRef?.current?.value.toLowerCase() ?? '')
         ) {
@@ -67,7 +69,7 @@ export const Report = () => {
         }
       } else if (value === '2') {
         if (
-          item?.property?.name
+          item?.propertyName
             .toLowerCase()
             ?.includes(inputRef?.current?.value.toLowerCase() ?? '')
         ) {
@@ -75,7 +77,7 @@ export const Report = () => {
         }
       } else {
         if (
-          item?.talhao?.name
+          item?.talhaoName
             .toLowerCase()
             ?.includes(inputRef?.current?.value.toLowerCase() ?? '')
         ) {
@@ -106,8 +108,23 @@ export const Report = () => {
         const response = await api.get(
           `product/report?propertyIds=[${formatId}]`
         );
-        setReports(response.data);
-        setReportsFiltered(response.data);
+        let formatedValues = [];
+
+        response.data?.forEach(item => {
+          item.products.forEach(item2 => {
+            formatedValues.push({
+              propertyName: item.property.name,
+              value: item2.amount,
+              nameProd: item2.name,
+              qntd: item2.qntd,
+              uM: item2.uM,
+              providName: item2.provider.name,
+            });
+          });
+        });
+        setReportsFiltered(formatedValues);
+
+        setReports(formatedValues);
       } catch (err) {}
     }
     if (value === '2') {
@@ -115,15 +132,45 @@ export const Report = () => {
         const response = await api.get(
           `purchase/report?propertyIds=[${formatId}]`
         );
-        setReports(response.data);
-        setReportsFiltered(response.data);
+
+        let formatedValues = [];
+
+        response.data?.forEach(item => {
+          item.products.forEach(item2 => {
+            formatedValues.push({
+              propertyName: item.property.name,
+              price: item2.price,
+              nameProd: item2.productName,
+              qntd: item2.qntd,
+              providName: item2.providerName,
+            });
+          });
+        });
+
+        setReports(formatedValues);
+        setReportsFiltered(formatedValues);
       } catch (err) {}
     }
     if (value === '3') {
       try {
         const response = await api.get(`talhao/report?talhaoIds=[${formatId}]`);
-        setReports(response.data);
-        setReportsFiltered(response.data);
+
+        let formatedValues = [];
+
+        response.data?.forEach(item => {
+          item?.applications?.forEach(item2 => {
+            formatedValues.push({
+              talhaoName: item.talhao.name,
+              propriedade: item.talhao.property.name,
+              aplicationDate: item2.applicationDate,
+              qntd: item2.qntd,
+              prodName: item2.product.name,
+            });
+          });
+        });
+
+        setReports(formatedValues);
+        setReportsFiltered(formatedValues);
       } catch (err) {}
     }
     setShowTypeReports(false);
@@ -149,9 +196,119 @@ export const Report = () => {
 
   useEffect(() => {
     handleGetTalhoes();
-
+    // formatValues();
     handleGetProperties();
   }, []);
+
+  const formatValuesToCheckProperty = () => {
+    if (value === '1') {
+      let result = [];
+
+      reportsFiltered?.map(item => {
+        const index = result.findIndex(item2 => item2.x === item.propertyName);
+
+        if (index === -1) {
+          result.push({
+            x: item.propertyName,
+            y: 1,
+          });
+        } else {
+          result[index].y = result[index].y + 1;
+        }
+      });
+      return result;
+    }
+    if (value === '2') {
+      let result = [];
+
+      reportsFiltered?.map(item => {
+        const index = result.findIndex(item2 => item2.x === item.propertyName);
+
+        if (index === -1) {
+          result.push({
+            x: item.propertyName,
+            y: 1,
+          });
+        } else {
+          result[index].y = result[index].y + 1;
+        }
+      });
+      return result;
+    }
+    if (value === '3') {
+      let result = [];
+
+      reportsFiltered?.map(item => {
+        const index = result.findIndex(item2 => item2.x === item.propriedade);
+
+        if (index === -1) {
+          result.push({
+            x: item.propriedade,
+            y: 1,
+          });
+        } else {
+          result[index].y = result[index].y + 1;
+        }
+      });
+      return result;
+    }
+  };
+
+  const formatValuesToCheckProduct = () => {
+    if (value === '1') {
+      let result = [];
+
+      reportsFiltered?.map(item => {
+        const index = result.findIndex(item2 => item2.x === item.propertyName);
+
+        if (index === -1) {
+          result.push({
+            x: item.nameProd,
+            y: Number(item.value),
+          });
+        } else {
+          result[index].y += Number(item.value);
+        }
+      });
+      return result;
+    }
+    if (value === '2') {
+      let result = [];
+
+      reportsFiltered?.map(item => {
+        const index = result.findIndex(item2 => item2.x === item.nameProd);
+
+        if (index === -1) {
+          result.push({
+            x: item.nameProd,
+            y: Number(item.price),
+          });
+        } else {
+          result[index].y += Number(item.price);
+        }
+      });
+
+      return result;
+    }
+    if (value === '3') {
+      let result = [];
+
+      reportsFiltered?.map(item => {
+        const index = result.findIndex(item2 => item2.x === item.prodName);
+
+        if (index === -1) {
+          result.push({
+            x: item.prodName,
+            y: Number(item.qntd),
+          });
+        } else {
+          result[index].y += Number(item.qntd);
+        }
+      });
+
+      return result;
+    }
+  };
 
   return (
     <MotionFlex
@@ -211,6 +368,17 @@ export const Report = () => {
         </Button>
       </Flex>
 
+      <Flex h="250px">
+        <LineChart reportsFiltered={formatValuesToCheckProperty()} />
+      </Flex>
+
+      <Flex h="250px">
+        <LineChartProduct
+          reportsFiltered={formatValuesToCheckProduct()}
+          value={value}
+        />
+      </Flex>
+
       <Flex
         flexWrap={'wrap'}
         gridGap="8"
@@ -258,37 +426,22 @@ export const Report = () => {
                       <Th>Propriedade</Th>
                       <Th>Produto(s)</Th>
                       <Th>Fornecedor(es)</Th>
+                      <Th>Quantidade</Th>
+                      <Th>uM</Th>
+                      <Th>Valor</Th>
                     </Tr>
                   </Thead>
 
                   <Tbody>
                     {reportsFiltered?.map((item, index) => {
-                      let propriedadeName = item?.property?.name;
-                      let productsName = [];
-                      let fornecedorName = [];
-
-                      item?.products?.forEach(subItem => {
-                        productsName?.push(subItem?.name);
-                        fornecedorName?.push(subItem?.provider.name);
-                      });
-
                       return (
                         <Tr key={index}>
-                          <Td>{propriedadeName}</Td>
-                          <Td>
-                            {productsName?.map((item, indexss) => {
-                              return `${item}${
-                                indexss < productsName.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
-                          <Td>
-                            {fornecedorName?.map((item, indexss) => {
-                              return `${item}${
-                                indexss < productsName.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
+                          <Td>{item.propertyName}</Td>
+                          <Td>{item.nameProd}</Td>
+                          <Td>{item.providName}</Td>
+                          <Td>{item.qntd}</Td>
+                          <Td>{item.uM}</Td>
+                          <Td>{formatToBRL(item.value)}</Td>
                         </Tr>
                       );
                     })}
@@ -308,52 +461,13 @@ export const Report = () => {
 
                   <Tbody>
                     {reportsFiltered?.map((item, index) => {
-                      let propriedadeName = item?.property?.name;
-                      let providerName = [];
-                      let productsName = [];
-                      let quantidadesCompradas = [];
-                      let valores = [];
-
-                      item?.products?.forEach(subItem => {
-                        console.log(subItem, 'subItem');
-                        productsName?.push(subItem?.productName);
-                        quantidadesCompradas?.push(subItem?.qntd);
-                        valores?.push(subItem?.price);
-                        providerName?.push(subItem?.providerName);
-                      });
-
                       return (
                         <Tr key={index}>
-                          <Td>{propriedadeName}</Td>
-                          <Td>
-                            {productsName?.map((item, indexss) => {
-                              return `${item}${
-                                indexss < productsName.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
-
-                          <Td>
-                            {providerName?.map((item, indexss) => {
-                              return `${item}${
-                                indexss < productsName.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
-                          <Td>
-                            {quantidadesCompradas?.map((item, indexss) => {
-                              return `${item}${
-                                indexss < productsName.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
-                          <Td>
-                            {valores?.map((item, indexss) => {
-                              return `${formatToBRL(item)}${
-                                indexss < productsName?.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
+                          <Td>{item.propertyName}</Td>
+                          <Td>{item.nameProd}</Td>
+                          <Td>{item.providName}</Td>
+                          <Td>{item.qntd}</Td>
+                          <Td>{formatToBRL(item.price)}</Td>
                         </Tr>
                       );
                     })}
@@ -363,52 +477,23 @@ export const Report = () => {
                 <>
                   <Thead>
                     <Tr>
-                      <Th>Talhões</Th>
-                      <Th>Produto(s) aplicado(s)</Th>
-                      <Th>Quantidade(s) aplicada(s)</Th>
+                      <Th>Talhão</Th>
+                      <Th>Propriedade</Th>
+                      <Th>Produto aplicado</Th>
+                      <Th>Quantidade aplicada</Th>
                       <Th>Datas</Th>
                     </Tr>
                   </Thead>
 
                   <Tbody>
                     {reportsFiltered?.map((item, index) => {
-                      let propriedadeName = item?.talhao?.name;
-                      let productsName = [];
-                      let quantidadesAplicadas = [];
-                      let datasAplicadas = [];
-
-                      item?.applications?.forEach(subItem => {
-                        console.log(subItem, 'subItem');
-                        productsName?.push(subItem?.product?.name);
-                        quantidadesAplicadas?.push(subItem?.qntd);
-                        datasAplicadas?.push(subItem?.applicationDate);
-                      });
-
                       return (
                         <Tr key={index}>
-                          <Td>{propriedadeName}</Td>
-                          <Td>
-                            {productsName?.map((item, indexss) => {
-                              return `${item}${
-                                indexss < productsName.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
-                          <Td>
-                            {quantidadesAplicadas?.map((item, indexss) => {
-                              return `${item}${
-                                indexss < productsName.length ? ', ' : ''
-                              }`;
-                            })}
-                          </Td>
-
-                          <Td>
-                            {datasAplicadas?.map((item, indexss) => {
-                              return `${formatToDate(new Date(item))}${
-                                indexss < productsName.length ? ' - ' : ''
-                              }`;
-                            })}
-                          </Td>
+                          <Td>{item.talhaoName}</Td>
+                          <Td>{item.propriedade}</Td>
+                          <Td>{item.prodName}</Td>
+                          <Td>{item.qntd}</Td>
+                          <Td>{formatToDate(new Date(item.aplicationDate))}</Td>
                         </Tr>
                       );
                     })}

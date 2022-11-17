@@ -22,9 +22,11 @@ import { CreateOrUpdateUser } from './CreateOrUpdateUser';
 
 export const Users = () => {
   const toast = useToast();
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState();
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
+  console.log(user);
 
   const handleGetUsers = useCallback(async () => {
     try {
@@ -134,7 +136,7 @@ export const Users = () => {
                     <Td
                       cursor={'pointer'}
                       onClick={() => {
-                        setUser(item);
+                        setUser({ item, phones: item.phones });
                         setShowModal(!showModal);
                       }}
                     >
