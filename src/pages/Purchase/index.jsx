@@ -26,6 +26,7 @@ export const Purchase = () => {
   const [showModal, setShowModal] = useState(false);
   const [purchasedEdit, setPurchasedEdit] = useState({});
   const [properties, setProperties] = useState([]);
+  const [products, setProducts] = useState([]);
   const [purchase, setPurchase] = useState([]);
   const [purchaseFiltered, setPurchaseFiltered] = useState([]);
   const toast = useToast();
@@ -82,10 +83,21 @@ export const Purchase = () => {
     } catch (err) {}
   };
 
+  const handleGetProductById = async () => {
+    try {
+      const response = await api.get('/product');
+      setProducts(response.data.result);
+    } catch (err) {}
+  };
+  console.log(products);
+
   useEffect(() => {
     handleGetProperties();
     handleGetPurchase();
+    handleGetProductById();
   }, []);
+
+  console.log(purchaseFiltered, 'purchaseFiltered');
 
   return (
     <MotionFlex
@@ -162,6 +174,7 @@ export const Purchase = () => {
             <Tr>
               <Th>Nome da propriedade</Th>
               <Th>Data</Th>
+              <Th>Produto</Th>
               <Th>Valor</Th>
               <Th></Th>
             </Tr>
@@ -171,8 +184,16 @@ export const Purchase = () => {
             {purchaseFiltered.map((item, index) => {
               let propertyName = '';
               let date = item.date;
+              let productName = '';
               let value = item.amount;
               let canShow = false;
+
+              products.forEach((product, index2) => {
+                if (product.id === item?.product[0]?.productId) {
+                  console.log('entrei');
+                  productName = product.name;
+                }
+              });
 
               properties.forEach((property, index2) => {
                 if (property.id === item.propertyId) {
@@ -188,6 +209,8 @@ export const Purchase = () => {
                   <Tr key={index}>
                     <Td>{propertyName}</Td>
                     <Td>{formatToDate(new Date(date))}</Td>
+
+                    <Td>{productName}</Td>
 
                     <Td>{formatToBRL(value)}</Td>
 

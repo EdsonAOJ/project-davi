@@ -25,6 +25,8 @@ export const CreateOrUpdatePurchase = ({
 }) => {
   const toast = useToast();
   const [purchase, setPurchase] = useState(purchasedEdit ?? {});
+
+  console.log(purchase, 'purchase');
   const [products, setProducts] = useState(
     purchasedEdit.product ?? [
       {
@@ -35,6 +37,7 @@ export const CreateOrUpdatePurchase = ({
       },
     ]
   );
+  console.log(products, 'products');
 
   const handleAddNewProduct = () => {
     const newArray = [...products];
@@ -217,6 +220,8 @@ export const CreateOrUpdatePurchase = ({
     onClose();
   };
 
+  console.log(products);
+
   return (
     <Card p="5">
       <Flex flexDir={'column'}>
@@ -317,7 +322,7 @@ export const CreateOrUpdatePurchase = ({
                       <option
                         value={item.id}
                         key={key}
-                        selected={itemn?.productId === product.id}
+                        selected={itemn?.productId === item.id}
                       >
                         {item.name}
                       </option>
