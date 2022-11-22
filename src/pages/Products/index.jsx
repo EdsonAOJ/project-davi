@@ -84,6 +84,15 @@ export const Products = () => {
     setProductsFiltered(result);
   }, [products]);
 
+  const handleFilterProperty = propertyId => {
+    if (propertyId === '')
+      return setProductsFiltered(products.sort(() => Math.random() - 0.5));
+
+    setProductsFiltered(
+      products.filter(item => item.propertyId === propertyId)
+    );
+  };
+
   const handleOrderProducts = orderType => {
     if (orderType === '')
       return setProductsFiltered(products.sort(() => Math.random() - 0.5));
@@ -158,14 +167,14 @@ export const Products = () => {
       h="100%"
     >
       <Flex align={'center'} justify="space-between" mb="10" pos={'relative'}>
-        <Flex w="70%" justify={'space-between'} gap="10px">
-          <InputGroup w="65%">
+        <Flex w="80%" justify={'space-between'} gap="10px">
+          <InputGroup w="35%">
             <Input
               placeholder="Pesquise um produto"
               borderColor={'#11FFB8'}
               focusBorderColor={'#11FFB8'}
               ref={inputRef}
-              pr="75px"
+              pr="25px"
             />
             {!searchIcon && (
               <CloseIcon
@@ -195,6 +204,19 @@ export const Products = () => {
             {options.map((item, key) => (
               <option value={item} key={key}>
                 {item}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            placeholder="filtrar por propriedade"
+            w="30%"
+            mr="10px"
+            onChange={e => handleFilterProperty(e.target.value)}
+          >
+            {properties.map((item, key) => (
+              <option value={item.id} key={key}>
+                {item.name}
               </option>
             ))}
           </Select>
